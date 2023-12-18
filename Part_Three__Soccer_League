@@ -1,0 +1,143 @@
+-- tables
+-- Table: goals
+CREATE TABLE goals (
+    id serial  NOT NULL,
+    players_id int  NOT NULL,
+    matches_id int  NOT NULL,
+    CONSTRAINT goals_pk PRIMARY KEY (id)
+);
+
+-- Table: matches
+CREATE TABLE matches (
+    id serial  NOT NULL,
+    teams_home_id int  NOT NULL,
+    teams_away_id int  NOT NULL,
+    referees_id int  NOT NULL,
+    teams_winner_id int  NOT NULL,
+    teams_loser_id int  NOT NULL,
+    CONSTRAINT matches_pk PRIMARY KEY (id)
+);
+
+-- Table: players
+CREATE TABLE players (
+    id serial  NOT NULL,
+    first_name varchar(20)  NOT NULL,
+    last_name varchar(20)  NOT NULL,
+    teams_id int  NOT NULL,
+    CONSTRAINT players_pk PRIMARY KEY (id)
+);
+
+-- Table: referees
+CREATE TABLE referees (
+    id serial  NOT NULL,
+    first_name varchar(20)  NOT NULL,
+    last_name varchar(20)  NOT NULL,
+    CONSTRAINT referees_pk PRIMARY KEY (id)
+);
+
+-- Table: season_dates
+CREATE TABLE season_dates (
+    id serial  NOT NULL,
+    start_date date  NOT NULL,
+    end_date date  NOT NULL,
+    CONSTRAINT season_dates_pk PRIMARY KEY (id)
+);
+
+-- Table: teams
+CREATE TABLE teams (
+    id serial  NOT NULL,
+    name varchar(20)  NOT NULL,
+    CONSTRAINT teams_pk PRIMARY KEY (id)
+);
+
+-- foreign keys
+-- Reference: goals_matches (table: goals)
+ALTER TABLE goals ADD CONSTRAINT goals_matches
+    FOREIGN KEY (matches_id)
+    REFERENCES matches (id)  
+;
+
+-- Reference: goals_players (table: goals)
+ALTER TABLE goals ADD CONSTRAINT goals_players
+    FOREIGN KEY (players_id)
+    REFERENCES players (id)  
+;
+
+-- Reference: matches_away (table: matches)
+ALTER TABLE matches ADD CONSTRAINT matches_away
+    FOREIGN KEY (teams_away_id)
+    REFERENCES teams (id)  
+;
+
+-- Reference: matches_home (table: matches)
+ALTER TABLE matches ADD CONSTRAINT matches_home
+    FOREIGN KEY (teams_home_id)
+    REFERENCES teams (id)  
+;
+
+-- Reference: matches_lost (table: matches)
+ALTER TABLE matches ADD CONSTRAINT matches_lost
+    FOREIGN KEY (teams_winner_id)
+    REFERENCES teams (id)  
+;
+
+-- Reference: matches_referees (table: matches)
+ALTER TABLE matches ADD CONSTRAINT matches_referees
+    FOREIGN KEY (referees_id)
+    REFERENCES referees (id)  
+;
+
+-- Reference: matches_teams (table: matches)
+ALTER TABLE matches ADD CONSTRAINT matches_teams
+    FOREIGN KEY (teams_loser_id)
+    REFERENCES teams (id)  
+;
+
+-- Reference: players_teams (table: players)
+ALTER TABLE players ADD CONSTRAINT players_teams
+    FOREIGN KEY (teams_id)
+    REFERENCES teams (id)  
+;
+
+
+-- Insert into referees table
+INSERT INTO referees (id, first_name, last_name) VALUES
+(1, 'Referee 1', 'Referee 1'),
+(2, 'Referee 2', 'Referee 2'),
+(3, 'Referee 3', 'Referee 3');
+
+-- Insert into teams table
+INSERT INTO teams (id, name) VALUES
+(1, 'Team 1'),
+(2, 'Team 2'),
+(3, 'Team 3');
+
+-- Insert into players table
+INSERT INTO players (id, first_name, last_name, teams_id) VALUES
+(1, 'Player 1', 'Player 1', 1),
+(2, 'Player 2', 'Player 2', 2),
+(3, 'Player 3', 'Player 3', 3);
+
+-- Insert into matches table
+INSERT INTO matches (id, teams_home_id, teams_away_id, referees_id, teams_winner_id, teams_loser_id) VALUES
+(1, 1, 2, 1, 1, 2),
+(2, 2, 3, 2, 2, 3),
+(3, 3, 1, 3, 3, 1);
+
+-- Insert into goals table
+INSERT INTO goals (id, players_id, matches_id) VALUES
+(1, 1, 1),
+(2, 2, 2),
+(3, 3, 3);
+
+-- Insert into season_dates table
+INSERT INTO season_dates (id, start_date, end_date) VALUES
+(1, '2018-01-01', '2018-12-31');
+
+-- query the teams in order of rank (wins*3+draws)
+SELECT teams.name, teams.id, COUNT(matches.teams_winner_id)*3 AS points
+FROM teams
+JOIN matches
+ON teams.id = matches.teams_winner_id
+GROUP BY teams.name, teams.id
+ORDER BY points DESC;

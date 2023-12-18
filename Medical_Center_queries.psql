@@ -1,0 +1,75 @@
+INSERT INTO doctor (first_name, last_name, specialty)
+VALUES
+  ('John', 'Doe', 'Cardiology'),
+  ('Jane', 'Smith', 'Orthopedics'),
+  ('Michael', 'Johnson', 'Pediatrics'),
+  ('Emily', 'Williams', 'Dermatology'),
+  ('Daniel', 'Brown', 'Ophthalmology'),
+  ('Olivia', 'Jones', 'Gastroenterology'),
+  ('David', 'Davis', 'Neurology'),
+  ('Sophia', 'Miller', 'Internal Medicine'),
+  ('Matthew', 'Moore', 'ENT'),
+  ('Ava', 'Wilson', 'Urology');
+
+insert into patient (first_name, last_name)
+values ('James', 'Smith'),
+  ('Mary', 'Johnson'),
+  ('John', 'Williams'),
+  ('Patricia', 'Brown'),
+  ('Robert', 'Jones'),
+  ('Jennifer', 'Miller'),
+  ('Michael', 'Davis'),
+  ('Linda', 'Moore'),
+  ('William', 'Wilson'),
+  ('Elizabeth', 'Taylor');
+
+insert into doctor_patient (doctor_id, patient_id)
+values (1, 1),
+  (1, 2),
+  (1, 3),
+  (2, 4),
+  (2, 5),
+  (2, 6),
+  (3, 7),
+  (3, 8),
+  (3, 9),
+  (4, 10);
+
+insert into disease (name)
+values ('Heart Disease'),
+  ('Broken Bone'),
+  ('Flu'),
+  ('Skin Cancer'),
+  ('Cataracts'),
+  ('Crohn''s Disease'),
+  ('Parkinson''s Disease'),
+  ('Diabetes'),
+  ('Hearing Loss'),
+  ('Kidney Stones');
+
+insert into diagnosis (patient_id, disease_id, doctor_id)
+values (1, 1, 1),
+  (2, 2, 1),
+  (3, 3, 1),
+  (4, 4, 2),
+  (5, 5, 2),
+  (6, 6, 2),
+  (7, 7, 3),
+  (8, 8, 3),
+  (9, 9, 3),
+  (10, 10, 4);
+-- select of doctors and their patients
+select concat(doc.first_name, ' ', doc.last_name) as "doctor", specialty,
+concat(pat.first_name, ' ', pat.last_name) as "patient"
+from doctor doc
+join doctor_patient on doc.id = doctor_patient.doctor_id
+join patient pat on pat.id = doctor_patient.patient_id;
+
+
+-- a select of the disease table, making the columns very readable
+select concat(d.first_name, ' ', d.last_name) as "doctor", specialty,
+concat(p.first_name, ' ', p.last_name) as "patient", ds.name as "disease"
+from doctor d
+join diagnosis dg on dg.doctor_id = d.id
+join patient p on dg.patient_id = p.id
+join disease ds on dg.disease_id = ds.id;

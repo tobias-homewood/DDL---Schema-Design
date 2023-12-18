@@ -1,0 +1,42 @@
+drop table if exists doctor_patient;
+drop table if exists diagnosis;
+drop table if exists doctor;
+drop table if exists patient;
+drop table if exists disease;
+
+
+CREATE TABLE doctor (
+    id serial PRIMARY KEY NOT NULL,
+    first_name varchar(15)  NOT NULL,
+    last_name varchar(15)  NOT NULL,
+    specialty varchar(20)  NOT NULL
+);
+
+CREATE TABLE patient (
+    id serial PRIMARY KEY NOT NULL,
+    first_name varchar(15)  NOT NULL,
+    last_name varchar(15)  NOT NULL
+);
+
+CREATE TABLE doctor_patient (
+    doctor_id int  NOT NULL,
+    patient_id int  NOT NULL,
+    PRIMARY KEY (doctor_id,patient_id),
+    FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE,
+    FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE
+);
+
+CREATE TABLE disease (
+    id serial  NOT NULL PRIMARY KEY,
+    name varchar(20)  NOT NULL
+);
+
+CREATE TABLE diagnosis (
+    patient_id int  NOT NULL,
+    disease_id int  NOT NULL,
+    doctor_id int  NOT NULL,
+    PRIMARY KEY (patient_id,disease_id,doctor_id),
+    FOREIGN KEY (patient_id) REFERENCES patient (id) ON DELETE CASCADE,
+    FOREIGN KEY (disease_id) REFERENCES disease (id) ON DELETE CASCADE,
+    FOREIGN KEY (doctor_id) REFERENCES doctor (id) ON DELETE CASCADE
+);

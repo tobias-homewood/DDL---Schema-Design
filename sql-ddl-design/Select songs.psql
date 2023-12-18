@@ -1,0 +1,7 @@
+SELECT songs.title, albums.title AS album_name, artists.name AS artist_name, producers.name AS producer_name
+FROM songs
+JOIN albums ON songs.album_id = albums.id
+JOIN produced ON songs.id = produced.song_id
+JOIN producers ON produced.producer_id = producers.id
+JOIN performed ON songs.id = performed.song_id
+JOIN artists ON performed.artist_id = artists.id
